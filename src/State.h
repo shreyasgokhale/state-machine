@@ -26,21 +26,51 @@ public:
 
     State();
 
+    /**
+     * State constructor with a name and state execute function pointer
+     * @param name
+     * @param executeStateFnPtr
+     */
     State(std::string name, bool (*executeStateFnPtr)());
 
+    /**
+     * Adds a transition from this state
+     * @param NextState : The next state
+     * @param transitionCondition : Function pointer which checks the conditions of transition
+     */
     void addTransition(State* NextState, bool(*transitionCondition)() );
 
+    /**
+     * Sets the state execution function pointer
+     * @param executeStateFnPtr
+     */
     void setExecuteStateFnPtr(bool (*executeStateFnPtr)());
 
+    /**
+     * Prints states name
+     */
     void printStateName();
 
+    /**
+     * Gets the execution function pointer of current state
+     * @return
+     */
     bool *getExecuteStateFnPtr();
 
+    /**
+     * Get name of the state
+     * @return : String of the name
+     */
+    const std::string &getName() const;
+
+    /**
+     * Get all possible transitions of current state
+     * @return : Vector of <transition> s
+     */
     std::vector<Transition> getStateTransitions();
 
     virtual ~State();
 
-    const std::string &getName() const;
 
 private:
 

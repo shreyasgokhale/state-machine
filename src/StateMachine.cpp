@@ -14,10 +14,10 @@ bool StateMachine::addNewState(const std::string &name, bool (*StateFunction)())
 }
 
 
-bool StateMachine::addTransition(State *current_state, State *next_state, bool (*TransitionFunction)()) {
+bool StateMachine::addTransition(State *s1, State *s2, bool (*TransitionFunction)()) {
 //   Check if current state exists
-    if (findState(current_state) && findState(next_state)) {
-        current_state->addTransition(next_state, TransitionFunction);
+    if (findState(s1) && findState(s2)) {
+        s1->addTransition(s2, TransitionFunction);
         return true;
     }
 
@@ -94,13 +94,24 @@ bool StateMachine::addNewState(State *state) {
 
     findState(state);
     if (!findState(state)) {
+//       Put this state in state machine
         this->stateMachineList_.emplace_back(state);
+//      For now, assume that first state is the init state
+        if (current_state_ == nullptr)
+            current_state_ = state;
+
         return true;
     }
 
     return false;
 
 }
+
+
+bool StateMachine::tickMachine() {
+    return current_state_->getExecuteStateFnPtr();
+}
+
 
 StateMachine::StateMachine(const std::list<State *> &stateMachineList) : stateMachineList_(stateMachineList) {}
 
