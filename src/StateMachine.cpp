@@ -2,22 +2,112 @@
 // Created by shreyas on 15.12.20.
 //
 
+#include <algorithm>
 #include "StateMachine.h"
 
-bool StateMachine::addNewState(const std::string &name, bool (*StateFunction)(), bool (*TransitionFunction)()) {
+bool StateMachine::addNewState(const std::string &name, bool (*StateFunction)()) {
 
-    State* new_state =  new State(name, StateFunction);
-
-    new_state->addTransition(nullptr, TransitionFunction);
-
+    State *new_state = new State(name, StateFunction);
     new_state->setExecuteStateFnPtr(StateFunction);
-
-    this->stateMachineList.emplace_back(new_state);
-
+    this->stateMachineList_.emplace_back(new_state);
     return true;
 }
 
-bool StateMachine::addNewState(State state) {
-    throw std::logic_error{"Function not yet implemented"};
+
+bool StateMachine::addTransition(State *current_state, State *next_state, bool (*TransitionFunction)()) {
+//   Check if current state exists
+    if (findState(current_state) && findState(next_state)) {
+        current_state->addTransition(next_state, TransitionFunction);
+        return true;
+    }
+
+    std::cout << "Given state does not exist" << std::endl;
+
     return false;
+}
+
+bool StateMachine::goToNextState() {
+
+    if (findState(current_state_)) {
+        std::vector<Transition> transitions = current_state_->getStateTransitions();
+        if (transitions.empty()) {
+//            Vector is empty, no transitions present
+            throw std::logic_error("No transitions present for this state");
+            return false;
+        }
+
+        std::vector<State *> available_transitions;
+
+        if (!getNextState(current_state_, transitions, &available_transitions)) {
+            std::cout << "No state change conditions are satisfied at the moment" << std::endl;
+            return false;
+        } else {
+            std::cout << "Transition Possible" << std::endl;
+//            For now, adding the first state as the next state
+            current_state_ = available_transitions.at(0);
+        }
+
+        return true;
+    }
+    return false;
+}
+
+
+bool StateMachine::findState(const std::string *&name, State **s) {
+
+    auto findIter = std::find_if(stateMachineList_.begin(), stateMachineList_.end(),
+                                 [&name](const State *state) { return *name == state->getName(); });
+
+    if (findIter != stateMachineList_.end()) {
+        *s = (*findIter);
+        return true;
+    }
+    *s = nullptr;
+    return false;
+}
+
+
+bool StateMachine::getNextState(State *current_state, std::vector<Transition> transition,
+                                std::vector<State *> *available_states) {
+
+    for (auto &it:transition) {
+        if (it.transitionCondition())
+            available_states->emplace_back(it.NextState);
+    }
+    if (available_states->empty())
+        return false;
+    return true;
+}
+
+
+bool StateMachine::findState(State *s) {
+
+
+//    std::cout << "Finding State" << s->getName() << std::endl;
+
+    return (std::find(stateMachineList_.begin(), stateMachineList_.end(), s) != stateMachineList_.end());
+
+}
+
+
+bool StateMachine::addNewState(State *state) {
+
+    findState(state);
+    if (!findState(state)) {
+        this->stateMachineList_.emplace_back(state);
+        return true;
+    }
+
+    return false;
+
+}
+
+StateMachine::StateMachine(const std::list<State *> &stateMachineList) : stateMachineList_(stateMachineList) {}
+
+StateMachine::StateMachine() {
+
+}
+
+StateMachine::~StateMachine() {
+
 }

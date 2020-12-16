@@ -8,6 +8,8 @@
 
 #include <string>
 #include <vector>
+#include <utility>
+#include <iostream>
 
 
 class State;
@@ -22,26 +24,34 @@ class State {
 
 public:
 
+    State();
+
     State(std::string name, bool (*executeStateFnPtr)());
 
     void addTransition(State* NextState, bool(*transitionCondition)() );
 
     void setExecuteStateFnPtr(bool (*executeStateFnPtr)());
 
+    void printStateName();
+
+    bool *getExecuteStateFnPtr();
+
+    std::vector<Transition> getStateTransitions();
+
     virtual ~State();
 
-
-
+    const std::string &getName() const;
 
 private:
 
     std::string name_;
 
-    bool (*executeStateFnPtr)();
+    bool (*executeStateFnPtr)() = nullptr;
 
     std::vector<Transition> transitions;
 
 };
+
 
 
 
