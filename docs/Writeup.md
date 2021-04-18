@@ -1,6 +1,6 @@
-# Made in Space
+## Assignment: State Machine for Robotic arm
 
-## Assignment 2: State Machine for Robotic arm
+Note: As the assignment was done very quickly (~2.5 hours), there are a lot of [To-Do's](#todos-and-future:).
 
 ### Question
 
@@ -36,7 +36,7 @@ In robotics, FSMs are used to determine different state a robot can be in (for e
 
 These states roughly translate to following state machine
 
-![Made%20in%20Space%208a29f6e434994a938a2cf139a43865f2/Untitled.png](Made%20in%20Space%208a29f6e434994a938a2cf139a43865f2/Untitled.png)
+![Sketch](./sketch-state-machine.png)
 
 ## Design Choices
 
@@ -68,7 +68,6 @@ The current version of code can create different states, search amoung them, and
 Different conditions are tested using GTest. They are all passing.
 
 ## TODOs and future:
-
 The exercise was quite fun to work with. And it gave me a chance to use some of the concepts in field. 
 
 To develop further, here are some of the TODOs that I can think of
